@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>MineGuard AI | Safety Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-mark">MG</span>
+        <span><strong>MineGuard<span class="brand-ai"> AI</span></strong><small>SAFETY COMMAND</small></span>
+      </a>
+      <div class="side-label">WORKSPACE</div>
+      <a class="nav-item active" href="#overview"><span class="nav-icon">▦</span> Overview</a>
+      <a class="nav-item" href="#live-sensors"><span class="nav-icon">⌁</span> Live Sensors</a>
+      <a class="nav-item" href="#analytics"><span class="nav-icon">▥</span> Analytics</a>
+      <div class="sidebar-bottom">
+        <div class="side-status"><span class="pulse-dot"></span><div><b>Monitoring system</b><small id="sideConnection">Connecting…</small></div></div>
+        <div class="sidebar-note">Prototype dashboard<br><span>Not certified for real mine safety.</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">UNDERGROUND OPERATIONS / CONTROL ROOM</div>
+          <h1>Safety Overview <span class="live-pill"><i></i> LIVE</span></h1>
+          <p class="subheading">Environmental conditions and equipment telemetry in one place.</p>
+        </div>
+        <div class="top-actions">
+          <div class="clock-card"><span class="clock-icon">◷</span><div><small>LOCAL TIME</small><strong id="currentTime">--:--:--</strong></div></div>
+          <button id="refreshBtn" class="refresh-btn"><span>↻</span> Refresh data</button>
+        </div>
+      </header>
+
+      <section class="hero-banner">
+        <div class="hero-copy">
+          <span class="hero-kicker">MINEGUARD INTELLIGENCE</span>
+          <h2>Every signal matters.<br><span>Every worker matters.</span></h2>
+          <p>Monitor sensor readings, spot unusual changes, and review recent conditions from your ESP32 device.</p>
+          <div class="hero-meta"><span class="hero-chip">ESP32 TELEMETRY</span><span class="hero-chip">SUPABASE CONNECTED</span></div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="radar-core"><span>MG</span></div>
+          <div class="radar-point point-one"></div><div class="radar-point point-two"></div><div class="radar-point point-three"></div>
+          <div class="radar-ring ring-a"></div><div class="radar-ring ring-b"></div>
+        </div>
+      </section>
+
+      <section class="section-heading" id="live-sensors">
+        <div><h2>Live sensor readings</h2><p>Latest available values from your connected device</p></div>
+        <div class="last-updated">Last updated <strong id="lastUpdated">—</strong></div>
+      </section>
+
+      <section class="metrics-grid">
+        <article class="metric-card metric-temp">
+          <div class="metric-top"><span class="metric-icon">♨</span><span class="metric-tag">ENVIRONMENT</span></div>
+          <div class="metric-label">Temperature</div><div class="metric-value"><span id="temperature">—</span><small>°C</small></div>
+          <div class="metric-foot"><span class="status-dot"></span><span id="tempStatus">Waiting for data</span></div>
+          <div class="sparkline"><span style="height:30%"></span><span style="height:46%"></span><span style="height:37%"></span><span style="height:65%"></span><span style="height:48%"></span><span style="height:78%"></span><span style="height:58%"></span><span style="height:88%"></span></div>
+        </article>
+        <article class="metric-card metric-humidity">
+          <div class="metric-top"><span class="metric-icon">◌</span><span class="metric-tag">ENVIRONMENT</span></div>
+          <div class="metric-label">Humidity</div><div class="metric-value"><span id="humidity">—</span><small>%</small></div>
+          <div class="metric-foot"><span class="status-dot"></span><span id="humidityStatus">Waiting for data</span></div>
+          <div class="progress-track"><span id="humidityBar" style="width:0%"></span></div>
+        </article>
+        <article class="metric-card metric-gas">
+          <div class="metric-top"><span class="metric-icon">〰</span><span class="metric-tag">GAS SENSOR</span></div>
+          <div class="metric-label">MQ-2 · Smoke / gas signal</div><div class="metric-value"><span id="mq2">—</span><small>ADC</small></div>
+          <div class="metric-foot"><span class="status-dot"></span><span id="mq2Status">Raw sensor reading</span></div>
+          <div class="mini-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="metric-card metric-gas2">
+          <div class="metric-top"><span class="metric-icon">⌁</span><span class="metric-tag">GAS SENSOR</span></div>
+          <div class="metric-label">MQ-4 · Methane sensor signal</div><div class="metric-value"><span id="mq4">—</span><small>ADC</small></div>
+          <div class="metric-foot"><span class="status-dot"></span><span id="mq4Status">Raw sensor reading</span></div>
+          <div class="progress-track gas-track"><span id="mq4Bar" style="width:0%"></span></div>
+        </article>
+        <article class="metric-card metric-gas3">
+          <div class="metric-top"><span class="metric-icon">✳</span><span class="metric-tag">GAS SENSOR</span></div>
+          <div class="metric-label">MQ-7 · Carbon monoxide signal</div><div class="metric-value"><span id="mq7">—</span><small>ADC</small></div>
+          <div class="metric-foot"><span class="status-dot"></span><span id="mq7Status">Raw sensor reading</span></div>
+          <div class="progress-track co-track"><span id="mq7Bar" style="width:0%"></span></div>
+        </article>
+        <article class="metric-card metric-distance">
+          <div class="metric-top"><span class="metric-icon">↔</span><span class="metric-tag">PROXIMITY</span></div>
+          <div class="metric-label">Ultrasonic distance</div><div class="metric-value"><span id="distance">—</span><small>cm</small></div>
+          <div class="metric-foot"><span class="status-dot"></span><span id="distanceStatus">Waiting for data</span></div>
+          <div class="distance-visual"><span></span><span></span><span></span><span></span><span></span><span></span><b>HC-SR04</b></div>
+        </article>
+      </section>
+
+      <section class="alert-row">
+        <article class="alert-card flame-card">
+          <div class="alert-symbol">♨</div><div class="alert-copy"><span class="alert-label">FLAME SENSOR</span><h3 id="flameState">Awaiting reading</h3><p id="flameDetail">Sensor state will appear here.</p></div><span class="alert-badge neutral" id="flameBadge">UNKNOWN</span>
+        </article>
+        <article class="alert-card motion-card">
+          <div class="alert-symbol">⌁</div><div class="alert-copy"><span class="alert-label">MOTION TELEMETRY</span><h3>Accelerometer Z</h3><p>Raw axis value: <strong id="az">—</strong></p></div><span class="alert-badge neutral" id="motionBadge">MONITORING</span>
+        </article>
+      </section>
+
+      <section class="analytics-grid" id="analytics">
+        <article class="panel chart-panel">
+          <div class="panel-header"><div><h2>Sensor trends</h2><p>Recent readings received by this dashboard</p></div>
+            <select id="chartMetric" aria-label="Select chart metric"><option value="temperature">Temperature</option><option value="humidity">Humidity</option><option value="mq2">MQ-2 signal</option><option value="mq4">MQ-4 signal</option><option value="mq7">MQ-7 signal</option><option value="distance">Distance</option></select>
+          </div>
+          <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+        </article>
+        <article class="panel axis-panel">
+          <div class="panel-header"><div><h2>Motion telemetry</h2><p>Raw accelerometer axes</p></div><span class="chart-live">● LIVE</span></div>
+          <div class="chart-wrap axis-chart-wrap"><canvas id="motionChart"></canvas></div>
+          <div class="axis-legend"><span><i class="legend-x"></i>AX</span><span><i class="legend-y"></i>AY</span><span><i class="legend-z"></i>AZ</span></div>
+        </article>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="panel history-panel">
+          <div class="panel-header"><div><h2>Recent readings</h2><p>Latest records retrieved from Supabase</p></div><span class="history-count" id="historyCount">0 records</span></div>
+          <div class="table-scroll"><table><thead><tr><th>TIME</th><th>TEMP</th><th>HUMIDITY</th><th>MQ-2</th><th>MQ-4</th><th>MQ-7</th><th>FLAME</th></tr></thead><tbody id="historyBody"><tr><td colspan="7" class="empty-cell">Waiting for sensor records…</td></tr></tbody></table></div>
+        </article>
+        <article class="panel system-panel">
+          <div class="panel-header"><div><h2>System status</h2><p>Connection and data freshness</p></div><span class="system-icon">⌘</span></div>
+          <div class="system-line"><span class="system-dot" id="dbDot"></span><div><b>Supabase database</b><small id="dbStatus">Connecting…</small></div><span class="system-state" id="dbState">WAIT</span></div>
+          <div class="system-line"><span class="system-dot" id="deviceDot"></span><div><b>Sensor data feed</b><small id="deviceStatus">Waiting for first row</small></div><span class="system-state" id="deviceState">WAIT</span></div>
+          <div class="system-line"><span class="system-dot"></span><div><b>Refresh interval</b><small>Automatic data polling</small></div><span class="system-state good">5 SEC</span></div>
+          <div class="system-footnote">Gas values are raw ADC signals, not calibrated ppm. Thresholds must be validated for your exact sensors and environment.</div>
+        </article>
+      </section>
+      <footer><span>© 2026 MineGuard AI · Student Project Prototype</span><span>Built for sensor visibility, not emergency decision-making.</span></footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+</body>
+</html>
