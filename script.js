@@ -187,7 +187,7 @@ async function fetchSensorData(showMessage = false) {
   refresh.style.opacity = ".7";
   try {
     const { data, error } = await supabaseClient
-      .from(sensor_readings)
+      .from("sensor_readings")
       .select("created_at,temperature,humidity,mq2,mq4,mq7,distance,ax,ay,az,flame_detected")
       .order("created_at", { ascending: false })
       .limit(HISTORY_LIMIT);
