@@ -2,8 +2,8 @@
 // Replace the publishable key below with your Supabase project's publishable/anon key.
 // NEVER put a service_role/secret key or your ESP32 device token in browser code.
 
-const SUPABASE_URL = "";
-const SUPABASE_PUBLISHABLE_KEY = "";
+const SUPABASE_URL = "https://pfrxeihyzzzmixoqzacn.supabase.co/functions/v1/upload-sensor-data";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_VJR4vnkOIZRFQ9toWWWsiw_AonOTPVT";
 const TABLE_NAME = "sensor_readings";
 const REFRESH_INTERVAL_MS = 5000;
 const HISTORY_LIMIT = 20;
